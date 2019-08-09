@@ -26,26 +26,12 @@ module.exports = {
     // webpack-dev-server 相关配置
     devServer: {
         proxy: {
-            '/app': {
-                target: 'http://192.168.222.240:8100',
-                changeOrigin: true,
-                ws: true,
-                pathRewrite: {
-                  '^/app': ''
-                }
-            },
             '/apx': {
-                target: 'http://192.168.222.118:8800',
-                changeOrigin: true,
-                ws: true,
-                pathRewrite: {
-                  '^/apx': ''
-                }
+                target: 'http://47.96.165.125:8820',
             },
             '/api': {
                 target: 'http://115.231.197.122:6312',
             },
-           
         }
     },
     // 第三方插件配置
