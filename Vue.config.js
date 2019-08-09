@@ -21,7 +21,7 @@ module.exports = {
             .set('assets', resolve('src/assets'))
     },
     // 生产环境是否生成 sourceMap 文件
-    productionSourceMap: true,
+    productionSourceMap: process.env.NODE_ENV==='development'?true:false,
 
     // webpack-dev-server 相关配置
     devServer: {

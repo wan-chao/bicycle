@@ -218,8 +218,6 @@ export default {
 
       this.setGetDataTime(latestDate);
 
-      console.log('///',this.bikeSelect)
-
       for(let item of list){
         let res = await bikes(type,item,ne,sw,this.zoom,time)
         if(type===BIKES_URL){  //车辆分布
@@ -254,7 +252,7 @@ export default {
           let radius = this.zoom * (r.num / max_num)*2;
           if (radius < 8) radius = 8;
           if (radius > 64) radius = 64;
-          let newIcon = createSquareIcon(icon,radius/10)
+          let newIcon = createSquareIcon(icon,radius*3)
           m =createMarker(newIcon,r.lon,r.lat,this.markerClick)
         }
         markerList.push(m);

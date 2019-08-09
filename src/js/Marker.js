@@ -48,15 +48,13 @@ export function createCircleMarker(x,y,color,radius){
 
 
 export function createSquareIcon(image,scale) {
-    let width = 30*scale
-    let height = 30*scale
     // 创建一个 Icon
     let icon = new AMap.Icon({
         // 图标尺寸
-        size: new AMap.Size(width, height),
+        size: new AMap.Size(scale, scale),
         // 图标的取图地址
         image,
-        imageSize: new AMap.Size(width, height),
+        imageSize: new AMap.Size(scale, scale),
     });
 
     return icon
