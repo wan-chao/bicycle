@@ -238,19 +238,19 @@ export default {
     polymerPointDraw(res,markerList,color){
       let routes = res.result;
       let max_num = res.max_num;
-      routes.forEach(r => {
-        let m;
-        if (this.zoom >= 18) {
-          m =createMarker(this.icon,r,this.markerClick)
-        }else{
-          let radius = this.zoom * (r.num / max_num)*2;
-          if (radius < 8) radius = 8;
-          if (radius > 64) radius = 64;
-          m = createCircleMarker(r.pos[0],r.pos[1],color,radius)
-        }
-        markerList.push(m);
-      });
-      this.map.add(markerList)
+      // routes.forEach(r => {
+      //   let m;
+      //   if (this.zoom >= 18) {
+      //     m =createMarker(this.icon,r,this.markerClick)
+      //   }else{
+      //     let radius = this.zoom * (r.num / max_num)*2;
+      //     if (radius < 8) radius = 8;
+      //     if (radius > 64) radius = 64;
+      //     m = createCircleMarker(r.pos[0],r.pos[1],color,radius)
+      //   }
+      //   markerList.push(m);
+      // });
+      // this.map.add(markerList)
     },
 
     //设置数据获取时的时间
