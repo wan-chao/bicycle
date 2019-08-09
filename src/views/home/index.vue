@@ -27,7 +27,7 @@ import InfoBox from './info-box'
 import AMap from 'AMap'
 import _ from 'lodash'
 import {XYZ_URL,ZOOM,MAP_OPTS,BIKES_URL,CHECK_URL,SUBSECTION,TRAVEL,BIKE_STATUS,BIKE_AREA,BIKE_TYPE,STAUTS_TYPE} from '@/config/config'
-import {createMarker,createCircleMarker} from '@/js/Marker'
+import {createMarker,createCircleMarker,createSquareIcon} from '@/js/Marker'
 import {latestTime,bikes} from '@/api/map'
 
 const XYZ_MARKER={
@@ -78,6 +78,9 @@ export default {
       ],
       icon:require('../../assets/images/icon13.png'),
       infoIcon:require('../../assets/images/infoIcon.png'),
+      circularIcon:require('../../assets/images/circular.png'),
+      squareIcon:require('../../assets/images/square.png'),
+      deltaIcon:require('../../assets/images/delta.png'),
     }
   },
   computed:{
@@ -134,7 +137,7 @@ export default {
 
     initInfoBox(){
       this.infoWindowHtml.forEach((item,index)=>{
-        let m= createMarker(this.infoIcon,item.center,this.markerClick);
+        let m= createMarker(this.infoIcon,item.center.pos[0],item.center.pos[1],this.markerClick);
         this.map.add(m)
         let infoWindow = new AMap.InfoWindow({
           isCustom: true,  //使用自定义窗体
@@ -149,6 +152,7 @@ export default {
 
     //点击覆盖物
     markerClick(e){
+      console.log('覆盖物被点击')
       let marker = e.target.getPosition()
       let icon = e.target.getIcon()
       if(icon===this.infoIcon){
@@ -207,7 +211,7 @@ export default {
       let ne = `${bounds.getNorthEast().lng},${bounds.getNorthEast().lat}`;
       let sw =`${bounds.getSouthWest().lng},${bounds.getSouthWest().lat}`;
 
-      let latest = await latestTime();
+      let latest = await latestTime('mobike');
 
       let latestDate = new Date(latest.result).getTime()
       let time = Math.round(latestDate / 1000);
@@ -226,12 +230,36 @@ export default {
           if(res.result) this.polymerPointDraw(res,markerList,BIKE_TYPE[index].color)
         }else if(type===CHECK_URL){  //车辆状态
           console.log('车辆状态',res)
-          res.forEach((item,index)=>{
-            let color = STAUTS_TYPE[index].color
-            this.polymerPointDraw(item,markerList,color)
+          res.forEach((r,index)=>{
+            if(index===0){
+              this.drawIconMarker(r,markerList,this.circularIcon)
+            }else if(index===1){
+              this.drawIconMarker(r,markerList,this.squareIcon)
+            }else if(index===2){
+              this.drawIconMarker(r,markerList,this.deltaIcon)
+            }
           })
         }
       }
+    },
+
+    drawIconMarker(res,markerList,icon){
+      let routes = res.result;
+      let max_num = res.max_num;
+      routes.forEach(r => {
+        let m;
+        if (this.zoom >= 18) {
+          m =createMarker(this.icon,r.lon,r.lat,this.markerClick)
+        }else{
+          let radius = this.zoom * (r.num / max_num)*2;
+          if (radius < 8) radius = 8;
+          if (radius > 64) radius = 64;
+          let newIcon = createSquareIcon(icon,radius/10)
+          m =createMarker(newIcon,r.lon,r.lat,this.markerClick)
+        }
+        markerList.push(m);
+      });
+      this.map.add(markerList)
     },
 
     //聚合点的绘制规制
@@ -241,12 +269,12 @@ export default {
       routes.forEach(r => {
         let m;
         if (this.zoom >= 18) {
-          m =createMarker(this.icon,r,this.markerClick)
+          m =createMarker(this.icon,r.lon,r.lat,this.markerClick)
         }else{
           let radius = this.zoom * (r.num / max_num)*2;
           if (radius < 8) radius = 8;
           if (radius > 64) radius = 64;
-          m = createCircleMarker(r.pos[0],r.pos[1],color,radius)
+          m = createCircleMarker(r.lon,r.lat,color,radius)
         }
         markerList.push(m);
       });

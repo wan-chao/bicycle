@@ -1,7 +1,7 @@
 export const SPACE_TIME = 1000*60*60*8;
 
 export const XYZ_URL = {
-  BIKE:'http://192.168.222.118:8800/tile?x=[x]&y=[y]&z=[z]'
+  BIKE:'/apx/tile?x=[x]&y=[y]&z=[z]'
 }
 
 export const ZOOM = 12

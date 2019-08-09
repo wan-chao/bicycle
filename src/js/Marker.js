@@ -23,9 +23,11 @@ export default class Marker  {
     }
 }
 
-export function createMarker(icon,r,callback){
-    return new Marker(icon,r.pos[0],r.pos[1],callback).marker
+export function createMarker(icon,x,y,callback){
+    return new Marker(icon,x,y,callback).marker
 }
+
+
 
 export function createCircleMarker(x,y,color,radius){
     return new AMap.CircleMarker({
@@ -42,5 +44,21 @@ export function createCircleMarker(x,y,color,radius){
         cursor:'pointer',
         clickable: true
     })
+}
+
+
+export function createSquareIcon(image,scale) {
+    let width = 30*scale
+    let height = 30*scale
+    // 创建一个 Icon
+    let icon = new AMap.Icon({
+        // 图标尺寸
+        size: new AMap.Size(width, height),
+        // 图标的取图地址
+        image,
+        imageSize: new AMap.Size(width, height),
+    });
+
+    return icon
 }
  
