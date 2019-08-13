@@ -1,11 +1,12 @@
 import AMap from 'AMap'
-
+import InfoWindow from './InfoWindow'
 export default class Marker  {
-    constructor (icon,x,y,callback) {
+    constructor (map,icon,x,y,data='') {
+        this.map=map
         this.icon=icon
         this.x=x
         this.y=y
-        this.callback=callback
+        this.data = data
         this.initMarker()
     }
     initMarker(){
@@ -13,7 +14,22 @@ export default class Marker  {
             position: new AMap.LngLat(this.x, this.y),
             icon: this.icon
         });
-        this.marker.on('click',this.callback)
+        this.marker.on('click',this.handleClick,this)
+        if(this.data){
+            this.infowwindow = new InfoWindow(this.map,this.x,this.y,this.data)
+        }
+    }
+    createMarker(){
+        return this.marker
+    }
+    handleClick(){
+        console.log('覆盖物被点击')
+        if(this.data){
+            this.infowwindow.getIsOpen()?this.infowwindow.close():this.infowwindow.open()
+        }
+    }
+    setTitle(){
+        this.marker.setTitle('我是marker的title');
     }
     show(){
         
@@ -21,42 +37,5 @@ export default class Marker  {
     hide(){
         
     }
-}
-
-export function createMarker(icon,x,y,callback){
-    return new Marker(icon,x,y,callback).marker
-}
-
-
-
-export function createCircleMarker(x,y,color,radius){
-    return new AMap.CircleMarker({
-        center:[x, y],
-        radius,//3D视图下，CircleMarker半径不要超过64px
-        strokeColor:color,
-        strokeWeight:0,
-        strokeOpacity:0.5,
-        //fillColor:'rgba(' + r.num * 255 / max_num + ',0,0,1)',
-        fillColor:color,
-        fillOpacity:0.8,
-        zIndex:-100,
-        bubble:true,
-        cursor:'pointer',
-        clickable: true
-    })
-}
-
-
-export function createSquareIcon(image,scale) {
-    // 创建一个 Icon
-    let icon = new AMap.Icon({
-        // 图标尺寸
-        size: new AMap.Size(scale, scale),
-        // 图标的取图地址
-        image,
-        imageSize: new AMap.Size(scale, scale),
-    });
-
-    return icon
 }
  

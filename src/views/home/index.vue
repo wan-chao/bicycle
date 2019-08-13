@@ -27,7 +27,9 @@ import InfoBox from './info-box'
 import AMap from 'AMap'
 import _ from 'lodash'
 import {XYZ_URL,ZOOM,MAP_OPTS,BIKES_URL,CHECK_URL,SUBSECTION,TRAVEL,BIKE_STATUS,BIKE_AREA,BIKE_TYPE,STAUTS_TYPE} from '@/config/config'
-import {createMarker,createCircleMarker,createSquareIcon} from '@/js/Marker'
+import CircleMarker from '@/js/CircleMarker'
+import Marker from '@/js/Marker'
+import MarkerIcon from '@/js/MarkerIcon'
 import {latestTime,bikes} from '@/api/map'
 
 const XYZ_MARKER={
@@ -45,7 +47,6 @@ export default {
       bikesMarkers:[],
       statusMarkers:[],
       infoWindowHtml:[],
-      infoWindowMarker:[],
       bikeType:BIKE_TYPE,
       infoList:[
         {
@@ -137,32 +138,9 @@ export default {
 
     initInfoBox(){
       this.infoWindowHtml.forEach((item,index)=>{
-        let m= createMarker(this.infoIcon,item.center.pos[0],item.center.pos[1],this.markerClick);
+        let m= new Marker(this.map,this.infoIcon,item.center.pos[0],item.center.pos[1],item).createMarker();
         this.map.add(m)
-        let infoWindow = new AMap.InfoWindow({
-          isCustom: true,  //使用自定义窗体
-          content: item.html,  //使用默认信息窗体框样式，显示信息内容
-          offset: new AMap.Pixel(1, -25),
-          position:[item.center.pos[0],item.center.pos[1]]
-        });
-        this.infoWindowMarker.push(infoWindow)
-        index===0&&infoWindow.open(this.map, [item.center.pos[0],item.center.pos[1]])
       })
-    },
-
-    //点击覆盖物
-    markerClick(e){
-      console.log('覆盖物被点击')
-      let marker = e.target.getPosition()
-      let icon = e.target.getIcon()
-      if(icon===this.infoIcon){
-        this.infoWindowMarker.forEach(v=>{
-          let window = v.getPosition();
-          if(marker.lat===window.lat&&marker.lng===window.lng){
-            v.getIsOpen()?v.close():v.open(this.map, [window.lng,window.lat])
-          }
-        })
-      }
     },
 
     reload(){
@@ -247,13 +225,13 @@ export default {
       routes.forEach(r => {
         let m;
         if (this.zoom >= 18) {
-          m =createMarker(this.icon,r.lon,r.lat,this.markerClick)
+          m =new Marker(this.map,this.icon,r.lon,r.lat).createMarker()
         }else{
           let radius = this.zoom * (r.num / max_num)*2;
-          if (radius < 8) radius = 8;
+          if (radius < 10) radius = 10;
           if (radius > 64) radius = 64;
-          let newIcon = createSquareIcon(icon,radius*3)
-          m =createMarker(newIcon,r.lon,r.lat,this.markerClick)
+          let newIcon = new MarkerIcon(icon,radius*3).create()
+          m =new Marker(this.map,newIcon,r.lon,r.lat).createMarker()
         }
         markerList.push(m);
       });
@@ -267,12 +245,12 @@ export default {
       routes.forEach(r => {
         let m;
         if (this.zoom >= 18) {
-          m =createMarker(this.icon,r.lon,r.lat,this.markerClick)
+          m =new Marker(this.map,this.icon,r.lon,r.lat).createMarker()
         }else{
           let radius = this.zoom * (r.num / max_num)*2;
           if (radius < 8) radius = 8;
           if (radius > 64) radius = 64;
-          m = createCircleMarker(r.lon,r.lat,color,radius)
+          m = new CircleMarker(this.map,r,color,radius).creatMarker()
         }
         markerList.push(m);
       });
