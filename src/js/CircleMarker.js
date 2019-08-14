@@ -1,5 +1,6 @@
 import AMap from 'AMap'
-
+import {BIKE_TYPE} from '@/config/config'
+import InfoWindow from './InfoWindow'
 export default class CircleMarker { 
     constructor (map,r,color,radius) {
         this.r=r
@@ -25,16 +26,32 @@ export default class CircleMarker {
             cursor:'pointer',
             clickable: true
         })
+        let styColor = this.infoWindowColor()
+        let htmlData = {
+            html:`<div class=${styColor}>${this.r.num}</div>`
+        }
+        let imageSize = {width:this.radius}
+        this.infowwindow = new InfoWindow(this.map,this.x,this.y,htmlData,imageSize)
         this.circleMarker.on('click',this.handleClick,this)
     }
     creatMarker(){
         return this.circleMarker
     }
+    infoWindowColor(){
+        let index = BIKE_TYPE.findIndex(v=>{
+            return v.color === this.color 
+        })
+        if(index === 0){
+            return 'lab-red'
+        }else if(index === 1){
+            return 'lab-blue'
+        }else if(index === 2){
+            return 'lab-green'
+        }else{
+            return ''
+        }
+    }
     handleClick(){
-        let infoWindow = new AMap.InfoWindow({
-            content: `单车数量：${this.r.num}`,
-            offset:new AMap.Pixel(0, -this.y*0.8)
-        });
-        infoWindow.open(this.map, [this.x, this.y]);
+        this.infowwindow.getIsOpen()?this.infowwindow.close():this.infowwindow.open()
     }
 }

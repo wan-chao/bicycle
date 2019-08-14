@@ -21,6 +21,39 @@ html,body{
   color: #333333;
   height: 100%;
 }
+.lab-blue{
+  position: relative;
+  width: 90px;
+  height: 50px;
+  line-height: 40px;
+  color: #fff;
+  font-size: 14px;
+  background: url('./assets/images/lab_blue.png') no-repeat;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.lab-red{
+  position: relative;
+  width: 90px;
+  height: 50px;
+  line-height: 40px;
+  color: #fff;
+  font-size: 14px;
+  background: url('./assets/images/lab_red.png') no-repeat;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.lab-green{
+  position: relative;
+  width: 90px;
+  height: 50px;
+  line-height: 40px;
+  color: #fff;
+  font-size: 14px;
+  background: url('./assets/images/lab_green.png') no-repeat;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
 .bounce-enter-active {
   animation: bounce-in .5s reverse;
 }

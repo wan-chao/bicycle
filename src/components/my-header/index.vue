@@ -35,7 +35,6 @@ export default {
       active:true,
       tabs:[
         {name:'首页',path:'/home',sty:'icon-iconfontzhizuobiaozhun023101 icon-item'},
-        {name:'统计调查',path:'/statistics',sty:'icon-tongjichakan icon-tongji'},
         {name:'系统设置',path:'/system',sty:'icon-icon icon-item'},
       ],
     }
@@ -95,7 +94,7 @@ export default {
   display: flex;
   width: 791px;
   height: 83px;
-  margin-left: 50px;
+  margin-left: 25px;
   margin-top: 35px;
   background: url('../../assets/images/left_top.png') no-repeat;
   background-size:100% 100%;
@@ -109,16 +108,18 @@ export default {
   color: #fff;
   line-height: 37px;
   text-align: center;
+  user-select:none;
 }
 .header-tab{
   display: flex;
   justify-content: space-around;
   align-items: center;
-  width: 417px;
+  width: 300px;
   height: 50px;
   margin-top: 10px;
-  margin-left: 25px;
+  margin-left: 100px;
   color: #2bbaec;
+  user-select:none;
 }
 .header-tab>li{
   display: flex;
@@ -128,6 +129,7 @@ export default {
   height: 34px;
   line-height: 42px;
   cursor: pointer;
+  user-select:none;
 }
 .tab-active{
   color: #a4e7ff;
@@ -156,7 +158,7 @@ export default {
   flex: none;
   width: 352px;
   height: 73px;
-  margin-right: 50px;
+  margin-right: 10px;
   margin-top: 35px;
   background: url('../../assets/images/right_top.png') no-repeat;
   background-size:100% 100%;

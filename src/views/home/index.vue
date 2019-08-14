@@ -9,8 +9,17 @@
         <action-list @change="actionChange"></action-list>
       </div>
       <div class="header-btn">
-        <type-btn :list="bikeType"></type-btn>
+        <type-btn @change="showStatistics" ref="typeBtn"></type-btn>
       </div>
+      <div class="btn-box" v-show="!showTravel">
+        <h1>单车类型</h1>
+        <bike-btn v-for="(item,index) in bikeType" :key="index" :bike="item"></bike-btn>
+      </div>
+      <transition name="el-zoom-in-bottom">
+        <div class="statistics-box" v-if="statisticShow">
+          <statistics-form></statistics-form>
+        </div>
+      </transition>
       <div id="allmap"></div>
       <div class="box-display">
         <info-box v-for="(list,index) in infoList" :key="index" :item="list" @out="outHtml"></info-box>
@@ -24,6 +33,8 @@ import MyHeader from '@/components/my-header'
 import TypeBtn from './type-btn'
 import ActionList from './action-list'
 import InfoBox from './info-box'
+import BikeBtn from './bike-btn'
+import StatisticsForm from '@/components/statistics-form'
 import AMap from 'AMap'
 import _ from 'lodash'
 import {XYZ_URL,ZOOM,MAP_OPTS,BIKES_URL,CHECK_URL,SUBSECTION,TRAVEL,BIKE_STATUS,BIKE_AREA,BIKE_TYPE,STAUTS_TYPE} from '@/config/config'
@@ -39,7 +50,7 @@ const XYZ_MARKER={
 export default {
   name: 'home',
   components: {
-    MyHeader,TypeBtn,ActionList,InfoBox
+    MyHeader,TypeBtn,ActionList,InfoBox,BikeBtn,StatisticsForm
   },
   data(){
     return {
@@ -48,6 +59,7 @@ export default {
       statusMarkers:[],
       infoWindowHtml:[],
       bikeType:BIKE_TYPE,
+      statisticShow:false,
       infoList:[
         {
           title:'洪山区运维人员',
@@ -122,6 +134,7 @@ export default {
 
     //地图功能显示切换
     actionChange(show,name){
+      this.$refs.typeBtn.hide()
       if(name===SUBSECTION){
         show?this.markerReload(SUBSECTION):this.clearMarker(this.bikesMarkers)
       }else if(name===TRAVEL){
@@ -129,6 +142,10 @@ export default {
       }else if(name===BIKE_STATUS){
         show?this.markerReload(BIKE_STATUS):this.clearMarker(this.statusMarkers)
       }
+    },
+
+    showStatistics(data){
+      this.statisticShow=data
     },
 
     outHtml(data) {
@@ -178,6 +195,7 @@ export default {
     mapZoomChange:_.debounce(function(){
       let zoom = this.map.getZoom()
       this.zoom=zoom
+      this.map.clearInfoWindow()
       this.showSubsection&&this.markerReload(SUBSECTION);
       this.showBikeStatus&&this.markerReload(BIKE_STATUS)
     },1000),
@@ -227,11 +245,19 @@ export default {
         if (this.zoom >= 18) {
           m =new Marker(this.map,this.icon,r.lon,r.lat).createMarker()
         }else{
+          let type = ''
           let radius = this.zoom * (r.num / max_num)*2;
           if (radius < 10) radius = 10;
           if (radius > 64) radius = 64;
           let newIcon = new MarkerIcon(icon,radius*3).create()
-          m =new Marker(this.map,newIcon,r.lon,r.lat).createMarker()
+          if(icon === this.circularIcon){
+            type=STAUTS_TYPE[0].type
+          }else if(icon === this.squareIcon){
+            type=STAUTS_TYPE[1].type
+          }else if(icon === this.deltaIcon){
+            type=STAUTS_TYPE[2].type
+          }
+          m =new Marker(this.map,newIcon,r.lon,r.lat,r,type).createMarker()
         }
         markerList.push(m);
       });
@@ -325,7 +351,7 @@ export default {
 .header-icon{
   position: fixed;
   top: 25px;
-  left: 35px;
+  left: 10px;
   z-index: 10;
   width: 60px;
   height:371px;
@@ -343,14 +369,16 @@ export default {
 .header-list{
   position: fixed;
   top: 148px;
-  left:65px;
+  left:40px;
   z-index: 10;
+  user-select:none;
 }
 .header-btn{
   position: fixed;
   top: 343px;
-  left: 35px;
+  left: 10px;
   z-index: 10;
+  user-select:none;
 }
 .box-display{
   position: absolute;
@@ -358,6 +386,34 @@ export default {
   right: 0;
   z-index: -10;
   opacity: 0;
+}
+.statistics-box{
+  position: fixed;
+  left: 0;
+  right: 0;
+  padding: 0 20px;
+  bottom: 20px;
+  height: 310px;
+  z-index: 10;
+}
+.btn-box{
+  position: fixed;
+  top: 130px;
+  right:15px;
+  z-index: 10;
+  font-size: 14px;
+  opacity: 1;
+  color: #d5f4ff;
+  width: 110px;
+  height: 155px;
+  padding-top: 10px;
+  background: url('../../assets/images/btn_box.png') no-repeat;
+  background-size:100% 100%;
+  &>h1{
+    color: #2bbaec;
+    font-size: 18px;
+    margin: 10px 0;
+  }
 }
 </style>
 
