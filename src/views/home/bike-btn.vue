@@ -60,9 +60,10 @@ export default {
   cursor: pointer;
 }
 .bike-active{
-  background: #0d485e;
-  border: 1px solid #2bbaec;
-  border-radius: 2px;
+  width: 72px;
+  height: 25px;
+  background: url('../../assets/images/bike_btn.png') no-repeat;
+  background-size:100% 100%;
 }
 </style>
 
